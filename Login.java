@@ -10,8 +10,10 @@ public class Login extends JFrame implements ActionListener {
 
     // Declaring Variables Globally
     JLabel usr,uid,psw;
-    JTextField un,uidtf,pstf;
-    JButton btn1,btn2;
+    JTextField un,uidtf;
+    JPasswordField pstf;
+    JButton btn1,btn2,psdbtn;
+    boolean psdShow = false;
 
     // Create constructor..
     Login(){
@@ -54,9 +56,18 @@ public class Login extends JFrame implements ActionListener {
         add(psw);
 
         // Text field for password
-        pstf = new JTextField();
-        pstf.setBounds(220,270,250,35);
+        pstf = new JPasswordField();
+        pstf.setBounds(220,270,170,35);
         add(pstf);
+
+        // Adding button for showing and hiding password
+        psdbtn = new JButton("Show");
+        psdbtn.setBounds(400,270,70,35);
+        psdbtn.setBackground(Color.BLUE);
+        psdbtn.setForeground(Color.WHITE);
+        psdbtn.setFont(new Font("Serif",Font.PLAIN,16));
+        psdbtn.addActionListener(this);
+        add(psdbtn);
 
         // Adding Login or forgot password buttons
         btn1 = new JButton("Login");
@@ -87,6 +98,18 @@ public class Login extends JFrame implements ActionListener {
 
     // Declaring action perfoemed method for login in our database....
     public void actionPerformed(ActionEvent ae){
+
+        if (ae.getSource() == psdbtn) {
+            psdShow = !psdShow;
+            if (psdShow) {
+                psdbtn.setText("Hide");
+                pstf.setEchoChar((char) 0);
+            } else {
+                psdbtn.setText("Show");
+                pstf.setEchoChar('\u2022');
+            }
+        }
+
         // This is for login button.
         if(ae.getSource() == btn1){
             // Getting data of user what he/she entered for checking availability in our database...
@@ -97,7 +120,7 @@ public class Login extends JFrame implements ActionListener {
             // In this try, we run query in our database through the java and chack user validation...
             try{
                 Connector c = new Connector();
-                String qry = "select * from logindata where User_ID = '" + userId +"' and Password = '" + pwd + "'";
+                String qry = "select * from logindata where userid = '" + userId +"' and password = '" + pwd + "'";
                 ResultSet rs = c.stmt.executeQuery(qry);
 
                 if(rs.next()){
